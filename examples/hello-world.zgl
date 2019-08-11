@@ -1,0 +1,22 @@
+zeglo 0;
+
+using std\ct\map;
+using std\eff;
+using std\os\posix\errno-t;
+using std\os\posix\stdout;
+using std\os\posix\write;
+using std\os\posix\write-t;
+using std\text\ascii;
+
+signature main is
+    forall s r e.
+    eff s *{write : write-t s | r}
+          +{errno : errno-t | e}
+          *{};
+
+value main is
+    par
+        my message = ascii"Hello, world!";
+        write stdout (ascii\bytes message);
+        yield *{};
+    end;

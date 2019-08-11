@@ -1,0 +1,59 @@
+#+TITLE: Zeglo
+Zeglo is a programming language aimed at the implementation of large
+maintainable software systems.
+
+The most important feature of Zeglo is the absence of global state,
+including that closed over by system calls. This goes beyond the
+restrictions imposed by languages such as Haskell, where I/O actions
+can still modify global state such as the file system. By putting the
+caller in control of what a subroutine mutates, workarounds for
+hardcoded resources can be avoided, and any subroutine can easily be
+sandboxed. The name Zeglo is derived from this feature, as it is an
+abbreviation of /zero globals/.
+
+In addition to the absence of global state, Zeglo features referential
+transparency and a type system derived from System Fω with type
+inference, type classes, and extensible records and polymorphic
+variants using row polymorphism; for this feature set the author
+believes to be the state of the art and has proven to be highly
+successful in industry.
+
+The final important aspect is that exceptions are not dynamically typed; one
+can always see from the type of a subroutine what exceptions it may throw.
+The seasoned Java CRUD wage slave may shudder at this thought, but with the
+use of polymorphic variants with row polymorphism this becomes a breeze.
+
+** Inspiration
+
+The main sources of inspiration of the above ideas are:
+
+- experience in industry,
+- the [[http://www.purescript.org][PureScript]] programming language, and
+- the [[https://zio.dev][ZIO]] Scala library.
+
+** Caveats
+
+Because the goal of the programming language is to be able to
+implement large maintainable software systems, no effort is spent on
+making it easy to write small throw-away programs. Indeed, the setup
+cost of a project is relatively big. A few examples of tasks that are
+tedious for a small throwaway programs but nonetheless required in due
+to their benefits in large maintainable software systems:
+
+- You have to decide how you want to build your source files and link
+  your object files. This is a complex process and it is better if the
+  programmer understands this than if it was hidden behind a limited
+  build tool for them.
+- You have to think about error and facility propagation, since there
+  are no excepions and mutable globals. This means that you need to
+  write down the possible errors and required facilities in the type
+  of every subroutine. While arguably tedious, this safes a lot of
+  trouble when changing the code later.
+- Facilities passed to main are different for every platform. No attempt is
+  made at providing a cross-platform interface for the file system or the
+  network. These interfaces have so many platform-specific options and caveats
+  that writing a cross-platform interface only results in a very limited,
+  underspecified, leaky abstraction.
+- You have to write the version number of the programming language at
+  the top of every source file. This allows the programming language
+  to evolve whilst still compiling older source files.
